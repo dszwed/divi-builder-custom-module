@@ -91,15 +91,20 @@ class wp360_ET_Builder_Recent_Posts extends ET_Builder_Module {
             'posts_per_page' => $number_of_posts,
             'category' => $category
         ));
-        ob_start();
         while($posts->have_posts()) {
-            $posts->the_post();
-            include('templates/post.php');
+            $posts->the_post(); 
+            $html .= '<div class="'.get_post_class().'">';
+            $html .= '<h2><a href="'.get_the_permalink().'">'.get_the_title().'</a></h2>';
+            if($show_meta && $show_date) {
+                $html .= date_i18n( 'd F Y');
+            }
+            if($show_excerpt) {
+                $html .= get_the_excerpt();
+            }
+            $html .= '</div>';
         }
         
         
-        $html .= ob_get_clean();
-        ob_end_clean();
         wp_reset_postdata();
 
         return '<div class="et_pb_module">' . $html . '</div>';
