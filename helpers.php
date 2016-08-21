@@ -1,11 +1,18 @@
 <?php
 
 function wp360_get_categories() {
+    $categoriesTerms = get_categories( array(
+        'orderby' => 'name'
+    ) );
+    
     $categories = array(
-        2 => 'Category 1',
-        3 => 'Category 2'
+        '' => 'All'
     );
+ 
+    foreach ( $categoriesTerms as $term ) {
+        
+        $categories[$term->term_id] = $term->name;
+    }
     
     return $categories;
 }
-

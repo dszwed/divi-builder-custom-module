@@ -21,7 +21,8 @@ class wp360_ET_Builder_Recent_Posts extends ET_Builder_Module {
 
         $this->fields_defaults = array(
             'number_of_posts' => array( 3, 'add_default_setting' ),
-            'title' => array( 'Recent posts', 'add_default_setting' )
+            'title' => array( 'Recent posts', 'add_default_setting' ),
+            'category' => array( 'All', 'add_default_setting' )
         );
 
         $this->main_css_element = '%%order_class%%';
@@ -79,17 +80,29 @@ class wp360_ET_Builder_Recent_Posts extends ET_Builder_Module {
     function shortcode_callback ( $atts, $content = null, $function_name ) {
         $number_of_posts = $this->shortcode_atts['product_id'];
         $title = $this->shortcode_atts['title'];
-        $show_excerpt = $this->shortcode_atts['show_excerpt'];
-        $show_meta = $this->shortcode_atts['show_meta'];
-        $show_date = $this->shortcode_atts['show_date'];
+        $show_excerpt = filter_var( $this->shortcode_atts['show_excerpt'], FILTER_VALIDATE_BOOLEAN);
+        $show_meta = filter_var( $this->shortcode_atts['show_meta'], FILTER_VALIDATE_BOOLEAN);
+        $show_date = filter_var( $this->shortcode_atts['show_date'], FILTER_VALIDATE_BOOLEAN);
         $category = $this->shortcode_atts['category'];
         
-        $html = '';
-        /*
-         * Generowanie html
-         */
+        $html = '<h1>'. $title .'</h1>';
+        
+        $posts = new WP_Query(array(
+            'posts_per_page' => $number_of_posts,
+            'category' => $category
+        ));
+        ob_start();
+        while($posts->have_posts()) {
+            $posts->the_post();
+            include('templates/post.php');
+        }
+        
+        
+        $html .= ob_get_clean();
+        ob_end_clean();
+        wp_reset_postdata();
 
-        return $html;
+        return '<div class="et_pb_module">' . $html . '</div>';
     }
 
 }
