@@ -2,6 +2,7 @@
 
 if ( !defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
+    
 }
 
 class wp360_ET_Builder_Recent_Posts extends ET_Builder_Module {
